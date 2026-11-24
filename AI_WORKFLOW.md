@@ -136,7 +136,8 @@ Prompt:
 > - dto.CategoriaDTO con id y nombre.
 > - excepcion.AccesoDatosException (RuntimeException).
 > - dao.CategoriaDao (@ApplicationScoped) que reciba el DataSource con @Resource(lookup = "java:app/jdbc/inventario") y
->   tenga un método listar() con PreparedStatement y try-with-resources. Si hay SQLException lanza AccesoDatosException.
+>   tenga un método listar() con PreparedStatement y try-with-resources. Si hay SQLException lanza
+>   AccesoDatosException.
 > - servicio.CategoriaServicio (@ApplicationScoped) que use el DAO y devuelva una lista de CategoriaDTO.
 > - api.CategoriaResource (@RequestScoped, ruta /categorias) con un GET que devuelva la lista en JSON.
 >
@@ -167,4 +168,32 @@ Decisión: desactivar el cifrado entre la aplicación y MySQL porque los dos con
 Docker y MySQL no publica ningún puerto. En un entorno real se mantendría el cifrado.
 
 Comprobación: tras reconstruir con docker compose up --build -d, la dirección http://localhost:8080/api/categorias
-devolvió las tres categorías en JSON.
+devolvió las tres categorías en JSON.### 8. CRUD completo de categorías
+
+Prompt:
+
+> Completa el CRUD de categorías manteniendo las capas:
+> - Excepciones nuevas en excepcion: ValidacionException, NoEncontradoException y ConflictoException (todas
+>   RuntimeException).
+> - CategoriaDao: añade buscarPorId, insertar (devuelve el id generado), actualizar y borrar, con PreparedStatement y
+>   try-with-resources. Si MySQL lanza SQLIntegrityConstraintViolationException (nombre repetido o categoría con
+>   productos) lanza ConflictoException; para el resto de SQLException, AccesoDatosException.
+> - CategoriaServicio: obtener, crear, actualizar y borrar usando CategoriaDTO. Valida que el nombre no esté vacío y no
+>   pase de 100 caracteres (ValidacionException) y lanza NoEncontradoException si el id no existe.
+> - CategoriaResource: GET /categorias/{id}, POST (responde 201 con la categoría creada), PUT /categorias/{id} (200) y
+>   DELETE /categorias/{id} (204).
+> - Clase api.ErrorMapper (@Provider, ExceptionMapper<RuntimeException>) que devuelva un JSON {"error": "mensaje"} con
+>   400 para ValidacionException, 404 para NoEncontradoException, 409 para ConflictoException y 500 para el resto. Si la
+>   excepción es una WebApplicationException devuelve su propia respuesta.
+>
+> Después ejecuta mvn package. No uses git.
+
+Resultado: Junie completó el DAO, el servicio y el resource, y creó las tres excepciones y el ErrorMapper. Además añadió
+por su cuenta dos tests de validación del nombre, que no estaban en el prompt.
+
+Comprobación con curl tras reconstruir los contenedores:
+
+- Crear la categoría "Redes" devolvió 201.
+- Crear una categoría con el nombre vacío devolvió 400.
+- Pedir la categoría 999 devolvió 404.
+- Borrar la categoría 1, que tiene productos, devolvió 409.
