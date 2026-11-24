@@ -2,9 +2,104 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Inventario de tienda</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script type="module" src="js/productos.js"></script>
 </head>
 <body>
-<h1>Inventario de tienda</h1>
+<header class="encabezado">
+    <div class="contenedor encabezado-contenido">
+        <p class="sobre-titulo">Administración</p>
+        <h1>Inventario de tienda</h1>
+        <nav aria-label="Secciones del inventario">
+            <button type="button" class="enlace-nav activo" data-section-target="productos" aria-pressed="true">
+                Productos
+            </button>
+            <button type="button" class="enlace-nav" data-section-target="categorias" aria-pressed="false">
+                Categorías
+            </button>
+            <button type="button" class="enlace-nav" data-section-target="proveedores" aria-pressed="false">
+                Proveedores
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor contenido-principal">
+    <div id="mensajes" class="mensajes" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="seccion-productos" aria-labelledby="titulo-productos">
+        <div class="titulo-seccion">
+            <div>
+                <p class="sobre-titulo">Catálogo</p>
+                <h2 id="titulo-productos">Productos</h2>
+            </div>
+        </div>
+
+        <div class="disposicion-productos">
+            <section class="panel panel-formulario" aria-labelledby="titulo-formulario">
+                <h3 id="titulo-formulario">Nuevo producto</h3>
+                <form id="formulario-producto">
+                    <label for="codigo">Código</label>
+                    <input id="codigo" name="codigo" type="text" required autocomplete="off">
+
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre" name="nombre" type="text" required autocomplete="off">
+
+                    <label for="precio">Precio</label>
+                    <input id="precio" name="precio" type="number" min="0.01" step="0.01" required>
+
+                    <label for="stock">Stock</label>
+                    <input id="stock" name="stock" type="number" min="0" step="1" required>
+
+                    <label for="categoriaId">Categoría</label>
+                    <select id="categoriaId" name="categoriaId" required>
+                        <option value="">Cargando categorías...</option>
+                    </select>
+
+                    <div class="acciones-formulario">
+                        <button id="guardar-producto" class="boton boton-principal" type="submit" disabled>
+                            Guardar producto
+                        </button>
+                        <button id="cancelar-edicion" class="boton boton-secundario" type="reset">
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel panel-tabla" aria-labelledby="titulo-listado">
+                <h3 id="titulo-listado">Listado de productos</h3>
+                <div class="tabla-contenedor">
+                    <table>
+                        <caption class="solo-lectores">Productos disponibles en el inventario</caption>
+                        <thead>
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody id="filas-productos">
+                        <tr><td colspan="6">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section id="seccion-categorias" aria-labelledby="titulo-categorias" hidden>
+        <h2 id="titulo-categorias">Categorías</h2>
+    </section>
+
+    <section id="seccion-proveedores" aria-labelledby="titulo-proveedores" hidden>
+        <h2 id="titulo-proveedores">Proveedores</h2>
+    </section>
+</main>
 </body>
 </html>

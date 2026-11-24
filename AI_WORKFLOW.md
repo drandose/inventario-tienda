@@ -245,4 +245,24 @@ Comprobación con curl:
 - Pedir los proveedores del producto 1 devolvió 200 con los proveedores 1 y 2.
 - Cambiarlos por los proveedores 2 y 3 devolvió 204.
 - Volver a pedirlos devolvió los proveedores 2 y 3.
-- Intentar asignar el proveedor 999, que no existe, devolvió 404.
+- Intentar asignar el proveedor 999, que no existe, devolvió 404.### 11. Interfaz web: base y productos
+
+Prompt:
+
+> Crea la interfaz web en src/main/webapp con HTML5 semántico, CSS y JavaScript moderno (fetch con async/await), sin
+> librerías externas:
+> - index.html con cabecera, navegación con tres secciones (Productos, Categorías, Proveedores) y una zona de mensajes.
+> - css/estilos.css con un diseño sencillo y responsive, que se vea bien en móvil.
+> - js/api.js con funciones para llamar a la API (/api/...) que lancen un error con el mensaje del campo "error" cuando
+>   la respuesta no sea correcta.
+> - js/productos.js: tabla con los productos, formulario para crear y editar (código, nombre, precio, stock y un
+>   desplegable de categorías) y botón de borrar con confirmación.
+>
+> Mientras se cargan los datos muestra "Cargando..." y enseña en la zona de mensajes los errores de validación o de
+> servidor. De momento las secciones de Categorías y Proveedores quedan vacías. No uses git.
+
+Resultado: Junie creó index.html, css/estilos.css, js/api.js y js/productos.js. Avisó de que no pudo comprobar el
+JavaScript porque Node no está instalado en mi equipo.
+
+Comprobación: tras reconstruir abrí http://localhost:8080 y probé a crear, editar y borrar un producto. Al guardar uno
+con precio negativo apareció el mensaje de error.
