@@ -74,7 +74,8 @@ Prompt:
 
 > Crea un docker-compose.yml con dos servicios. El servicio de la aplicación todavía no.
 > - db: imagen mysql:8.4. Las variables MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER y MYSQL_PASSWORD se leen del
->   archivo .env con los nombres DB_ROOT_PASSWORD, DB_NAME, DB_USER y DB_PASSWORD. Usa un volumen con nombre db_data en
+>   archivo .env con los nombres DB_ROOT_PASSWORD, DB_NAME, DB_USER y DB_PASSWORD. Usa un volumen con nombre db_data
+>   en
 >   /var/lib/mysql. Monta db/init.sql en /docker-entrypoint-initdb.d/ en solo lectura. Añade un healthcheck con
 >   mysqladmin ping. No publiques ningún puerto de db.
 > - adminer: imagen adminer:5, con el puerto 8081 del equipo hacia el 8080 del contenedor, y que espere a que db esté
@@ -89,4 +90,18 @@ Corrección manual: Junie había puesto nombres fijos al volumen y a la red (nam
 esas dos líneas para que Docker ponga delante el nombre del proyecto y no choquen con otros proyectos del mismo equipo.
 
 Comprobación: copié .env.example a .env y ejecuté docker compose up -d. El contenedor de MySQL quedó en estado healthy.
-Entré en Adminer (http://localhost:8081) y estaban las cuatro tablas con los datos de prueba.
+Entré en Adminer (http://localhost:8081) y estaban las cuatro tablas con los datos de prueba.### 5. Primera parte de la
+aplicación
+
+Prompt:
+
+> Crea la primera parte de la aplicación con JAX-RS (Jakarta EE 11), sin base de datos todavía:
+> - Clase com.tienda.inventario.api.ConfiguracionApi que extienda Application con @ApplicationPath("/api").
+> - Clase com.tienda.inventario.api.EstadoResource con un método GET en la ruta /estado que devuelva el JSON {"estado":
+>   "ok"}.
+> - Página src/main/webapp/index.html con el título "Inventario de tienda".
+>
+> Después ejecuta mvn package y dime si termina bien. No uses git.
+
+Resultado: Junie creó las dos clases y la página. El comando mvn package terminó con BUILD SUCCESS. No hizo falta
+corregir nada.
