@@ -79,10 +79,10 @@ La interfaz est√° en `src/main/webapp`: `index.html`, `css/estilos.css` y los m√
 
 Se necesita Docker con Docker Compose.
 
-1. Clona el repositorio y entra en su directorio. Sustituye el marcador por la URL del repositorio:
+1. Clona el repositorio y entra en su directorio:
 
    ```sh
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/drandose/inventario-tienda.git
    cd inventario-tienda
    ```
 
