@@ -183,7 +183,8 @@ Prompt:
 > - CategoriaResource: GET /categorias/{id}, POST (responde 201 con la categoría creada), PUT /categorias/{id} (200) y
 >   DELETE /categorias/{id} (204).
 > - Clase api.ErrorMapper (@Provider, ExceptionMapper<RuntimeException>) que devuelva un JSON {"error": "mensaje"} con
->   400 para ValidacionException, 404 para NoEncontradoException, 409 para ConflictoException y 500 para el resto. Si la
+>   400 para ValidacionException, 404 para NoEncontradoException, 409 para ConflictoException y 500 para el resto. Si
+>   la
 >   excepción es una WebApplicationException devuelve su propia respuesta.
 >
 > Después ejecuta mvn package. No uses git.
@@ -196,4 +197,27 @@ Comprobación con curl tras reconstruir los contenedores:
 - Crear la categoría "Redes" devolvió 201.
 - Crear una categoría con el nombre vacío devolvió 400.
 - Pedir la categoría 999 devolvió 404.
-- Borrar la categoría 1, que tiene productos, devolvió 409.
+- Borrar la categoría 1, que tiene productos, devolvió 409.### 9. CRUD de productos
+
+Prompt:
+
+> Crea el CRUD de productos siguiendo el mismo patrón por capas que categorías:
+> - modelo.Producto con id, codigo, nombre, precio (BigDecimal), stock y categoriaId.
+> - dto.ProductoDTO con esos campos más categoriaNombre, que es solo de lectura y se obtiene con un JOIN.
+> - dao.ProductoDao con listar, buscarPorId, insertar, actualizar y borrar. Si el código está repetido lanza
+>   ConflictoException.
+> - servicio.ProductoServicio con estas validaciones (ValidacionException): código y nombre obligatorios, precio mayor
+>   que 0, stock no negativo y que la categoría exista. Lanza NoEncontradoException si el id no existe.
+> - api.ProductoResource en /productos con GET, GET /{id}, POST (201), PUT /{id} y DELETE /{id} (204).
+>
+> Después ejecuta mvn package. No uses git.
+
+Resultado: Junie creó las clases de cada capa siguiendo el patrón de categorías. También añadió, sin estar en el prompt,
+tests de las validaciones de código, nombre, precio y stock. Con ellos pasan 7 tests.
+
+Comprobación con curl:
+
+- Pedir el producto 1 devolvió 200, con el nombre de su categoría.
+- Crear el producto RED-001 devolvió 201.
+- Crear un producto con precio negativo devolvió 400.
+- Crear un producto con un código repetido devolvió 409.
