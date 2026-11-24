@@ -123,4 +123,48 @@ Resultado: Junie creó el Dockerfile con dos etapas, añadió el servicio app al
 .dockerignore. No hizo falta corregir nada.
 
 Comprobación: ejecuté docker compose up --build -d y arrancaron los tres contenedores. La
-dirección http://localhost:8080/api/estado respondió {"estado":"ok"}.
+dirección http://localhost:8080/api/estado respondió {"estado":"ok"}.### 7. Conexión con la base de datos y lectura de
+categorías
+
+Prompt:
+
+> Conecta la aplicación con la base de datos y crea la lectura de categorías por capas:
+> - src/main/webapp/WEB-INF/web.xml (Jakarta EE 11) con un data-source: name java:app/jdbc/inventario, class-name
+>   com.mysql.cj.jdbc.MysqlDataSource, url ${ENV=DB_URL}, user ${ENV=DB_USER} y password ${ENV=DB_PASSWORD}.
+> - src/main/webapp/WEB-INF/beans.xml con bean-discovery-mode="annotated".
+> - modelo.Categoria con id y nombre.
+> - dto.CategoriaDTO con id y nombre.
+> - excepcion.AccesoDatosException (RuntimeException).
+> - dao.CategoriaDao (@ApplicationScoped) que reciba el DataSource con @Resource(lookup = "java:app/jdbc/inventario") y
+>   tenga un método listar() con PreparedStatement y try-with-resources. Si hay SQLException lanza AccesoDatosException.
+> - servicio.CategoriaServicio (@ApplicationScoped) que use el DAO y devuelva una lista de CategoriaDTO.
+> - api.CategoriaResource (@RequestScoped, ruta /categorias) con un GET que devuelva la lista en JSON.
+>
+> Todo dentro del paquete com.tienda.inventario. Después ejecuta mvn package. No uses git.
+
+Resultado: Junie creó el web.xml, el beans.xml y las clases de cada capa. El proyecto compilaba, pero al probarlo en
+Docker la dirección /api/categorias daba error 404.
+
+Error 1: en el registro de Payara (docker compose logs app) aparecía que el web.xml no era válido, porque la url del
+data-source tiene que empezar por jdbc: y yo la había pedido entera en una variable. Prompt de corrección:
+
+> Al desplegar en Payara la aplicación falla con este error del web.xml:
+> cvc-pattern-valid: Value '${ENV=DB_URL}' is not facet-valid with respect to pattern 'jdbc:(.*):(.*)'
+> La url del data-source tiene que empezar por jdbc:. Cambia la url a jdbc:mysql://${ENV=DB_HOST}:${ENV=DB_PORT}/${ENV=
+> DB_NAME}. En el servicio app del docker-compose.yml quita DB_URL y pon DB_HOST con valor db, DB_PORT con valor 3306 y
+> DB_NAME tomado del .env. No cambies nada más ni uses git.
+
+Error 2: la aplicación ya desplegaba, pero la conexión con MySQL fallaba con "Communications link failure". En el
+registro se veía que el fallo estaba en la negociación SSL. Prompt de corrección:
+
+> La aplicación ya despliega, pero al pedir /api/categorias falla la conexión con MySQL: "Communications link failure"
+> con "Broken pipe" durante el handshake SSL (sun.security.ssl.SSLSocketImpl.startHandshake). Como la app y la base de
+> datos están en la misma red interna de Docker, desactiva el cifrado de esa conexión: añade al final de la url del
+> data-source en web.xml los parámetros ?sslMode=DISABLED&allowPublicKeyRetrieval=true (recuerda que en XML el & se
+> escribe &amp;). No cambies nada más ni uses git.
+
+Decisión: desactivar el cifrado entre la aplicación y MySQL porque los dos contenedores están en la misma red interna de
+Docker y MySQL no publica ningún puerto. En un entorno real se mantendría el cifrado.
+
+Comprobación: tras reconstruir con docker compose up --build -d, la dirección http://localhost:8080/api/categorias
+devolvió las tres categorías en JSON.
