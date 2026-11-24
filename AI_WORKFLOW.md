@@ -220,4 +220,29 @@ Comprobación con curl:
 - Pedir el producto 1 devolvió 200, con el nombre de su categoría.
 - Crear el producto RED-001 devolvió 201.
 - Crear un producto con precio negativo devolvió 400.
-- Crear un producto con un código repetido devolvió 409.
+- Crear un producto con un código repetido devolvió 409.### 10. CRUD de proveedores y relación con productos
+
+Prompt:
+
+> Crea el CRUD de proveedores con el mismo patrón por capas (modelo.Proveedor, dto.ProveedorDTO, dao.ProveedorDao,
+> servicio.ProveedorServicio y api.ProveedorResource en /proveedores). El nombre es obligatorio y, si hay email, debe
+> contener una @ (ValidacionException).
+> Añade también la relación entre productos y proveedores:
+> - dao.ProductoProveedorDao con listarProveedoresDeProducto, borrarPorProducto e insertar.
+> - En ProductoServicio, un método asignarProveedores(productoId, lista de ids de proveedor) anotado con @Transactional
+>   (jakarta.transaction) que compruebe que el producto y los proveedores existen, borre las relaciones anteriores e
+>   inserte las nuevas, para que se guarde todo o nada.
+> - En ProductoResource: GET /productos/{id}/proveedores y PUT /productos/{id}/proveedores, que recibe un JSON con la
+>   lista de ids.
+>
+> Después ejecuta mvn package. No uses git.
+
+Resultado: Junie creó el CRUD de proveedores, el ProductoProveedorDao y los dos endpoints nuevos. El método
+asignarProveedores lleva @Transactional. También añadió tests; en total pasan 12.
+
+Comprobación con curl:
+
+- Pedir los proveedores del producto 1 devolvió 200 con los proveedores 1 y 2.
+- Cambiarlos por los proveedores 2 y 3 devolvió 204.
+- Volver a pedirlos devolvió los proveedores 2 y 3.
+- Intentar asignar el proveedor 999, que no existe, devolvió 404.

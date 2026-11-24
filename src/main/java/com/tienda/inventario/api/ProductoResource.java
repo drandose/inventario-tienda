@@ -1,6 +1,7 @@
 package com.tienda.inventario.api;
 
 import com.tienda.inventario.dto.ProductoDTO;
+import com.tienda.inventario.dto.ProveedorDTO;
 import com.tienda.inventario.servicio.ProductoServicio;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -57,6 +58,21 @@ public class ProductoResource {
     @Path("/{id}")
     public Response borrar(@PathParam("id") int id) {
         productoServicio.borrar(id);
+        return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/{id}/proveedores")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProveedorDTO> listarProveedores(@PathParam("id") int id) {
+        return productoServicio.listarProveedoresDeProducto(id);
+    }
+
+    @PUT
+    @Path("/{id}/proveedores")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response asignarProveedores(@PathParam("id") int id, List<Integer> proveedorIds) {
+        productoServicio.asignarProveedores(id, proveedorIds);
         return Response.noContent().build();
     }
 }
