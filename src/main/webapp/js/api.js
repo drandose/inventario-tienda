@@ -38,6 +38,15 @@ function enviarJson(ruta, metodo, datos) {
 
 export const listarProductos = () => solicitar("/productos");
 export const listarCategorias = () => solicitar("/categorias");
+export const listarProveedores = () => solicitar("/proveedores");
 export const crearProducto = producto => enviarJson("/productos", "POST", producto);
 export const actualizarProducto = (id, producto) => enviarJson(`/productos/${id}`, "PUT", producto);
 export const borrarProducto = id => solicitar(`/productos/${id}`, { method: "DELETE" });
+export const crearCategoria = categoria => enviarJson("/categorias", "POST", categoria);
+export const actualizarCategoria = (id, categoria) => enviarJson(`/categorias/${id}`, "PUT", categoria);
+export const borrarCategoria = id => solicitar(`/categorias/${id}`, { method: "DELETE" });
+export const crearProveedor = proveedor => enviarJson("/proveedores", "POST", proveedor);
+export const actualizarProveedor = (id, proveedor) => enviarJson(`/proveedores/${id}`, "PUT", proveedor);
+export const borrarProveedor = id => solicitar(`/proveedores/${id}`, { method: "DELETE" });
+export const listarProveedoresDeProducto = id => solicitar(`/productos/${id}/proveedores`);
+export const asignarProveedores = (id, proveedorIds) => enviarJson(`/productos/${id}/proveedores`, "PUT", proveedorIds);

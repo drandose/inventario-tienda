@@ -6,6 +6,8 @@
     <title>Inventario de tienda</title>
     <link rel="stylesheet" href="css/estilos.css">
     <script type="module" src="js/productos.js"></script>
+    <script type="module" src="js/categorias.js"></script>
+    <script type="module" src="js/proveedores.js"></script>
 </head>
 <body>
 <header class="encabezado">
@@ -94,11 +96,71 @@
     </section>
 
     <section id="seccion-categorias" aria-labelledby="titulo-categorias" hidden>
-        <h2 id="titulo-categorias">Categorías</h2>
+        <div class="titulo-seccion">
+            <div>
+                <p class="sobre-titulo">Organización</p>
+                <h2 id="titulo-categorias">Categorías</h2>
+            </div>
+        </div>
+        <div class="disposicion-productos">
+            <section class="panel panel-formulario" aria-labelledby="titulo-formulario-categoria">
+                <h3 id="titulo-formulario-categoria">Nueva categoría</h3>
+                <form id="formulario-categoria">
+                    <label for="nombre-categoria">Nombre</label>
+                    <input id="nombre-categoria" name="nombre" type="text" maxlength="100" required autocomplete="off">
+                    <div class="acciones-formulario">
+                        <button id="guardar-categoria" class="boton boton-principal" type="submit">Guardar categoría</button>
+                        <button class="boton boton-secundario" type="reset">Limpiar</button>
+                    </div>
+                </form>
+            </section>
+            <section class="panel panel-tabla" aria-labelledby="titulo-listado-categorias">
+                <h3 id="titulo-listado-categorias">Listado de categorías</h3>
+                <div class="tabla-contenedor">
+                    <table>
+                        <caption class="solo-lectores">Categorías disponibles</caption>
+                        <thead><tr><th scope="col">Nombre</th><th scope="col">Acciones</th></tr></thead>
+                        <tbody id="filas-categorias"><tr><td colspan="2">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </section>
 
     <section id="seccion-proveedores" aria-labelledby="titulo-proveedores" hidden>
-        <h2 id="titulo-proveedores">Proveedores</h2>
+        <div class="titulo-seccion">
+            <div>
+                <p class="sobre-titulo">Abastecimiento</p>
+                <h2 id="titulo-proveedores">Proveedores</h2>
+            </div>
+        </div>
+        <div class="disposicion-productos">
+            <section class="panel panel-formulario" aria-labelledby="titulo-formulario-proveedor">
+                <h3 id="titulo-formulario-proveedor">Nuevo proveedor</h3>
+                <form id="formulario-proveedor">
+                    <label for="nombre-proveedor">Nombre</label>
+                    <input id="nombre-proveedor" name="nombre" type="text" required autocomplete="off">
+                    <label for="telefono-proveedor">Teléfono</label>
+                    <input id="telefono-proveedor" name="telefono" type="tel" autocomplete="tel">
+                    <label for="email-proveedor">Email</label>
+                    <input id="email-proveedor" name="email" type="email" autocomplete="email">
+                    <div class="acciones-formulario">
+                        <button id="guardar-proveedor" class="boton boton-principal" type="submit">Guardar proveedor</button>
+                        <button class="boton boton-secundario" type="reset">Limpiar</button>
+                    </div>
+                </form>
+            </section>
+            <section class="panel panel-tabla" aria-labelledby="titulo-listado-proveedores">
+                <h3 id="titulo-listado-proveedores">Listado de proveedores</h3>
+                <div class="tabla-contenedor">
+                    <table>
+                        <caption class="solo-lectores">Proveedores disponibles</caption>
+                        <thead><tr><th scope="col">Nombre</th><th scope="col">Teléfono</th><th scope="col">Email</th><th scope="col">Acciones</th></tr></thead>
+                        <tbody id="filas-proveedores"><tr><td colspan="4">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </section>
 </main>
 </body>

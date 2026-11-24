@@ -265,4 +265,22 @@ Resultado: Junie creó index.html, css/estilos.css, js/api.js y js/productos.js.
 JavaScript porque Node no está instalado en mi equipo.
 
 Comprobación: tras reconstruir abrí http://localhost:8080 y probé a crear, editar y borrar un producto. Al guardar uno
-con precio negativo apareció el mensaje de error.
+con precio negativo apareció el mensaje de error.### 12. Interfaz web: categorías, proveedores y asignación
+
+Prompt:
+
+> Completa la interfaz con el mismo estilo:
+> - js/categorias.js: tabla de categorías, formulario para crear y editar (nombre) y botón de borrar con confirmación.
+> - js/proveedores.js: tabla de proveedores, formulario para crear y editar (nombre, teléfono y email) y botón de borrar
+>   con confirmación.
+> - En la tabla de productos añade un botón "Proveedores" que muestre los proveedores del producto como casillas
+>   marcables y un botón para guardar la selección (PUT /api/productos/{id}/proveedores).
+>
+> Mantén el "Cargando..." y los mensajes de error. Cuando se cree o borre una categoría, el desplegable del formulario
+> de productos debe actualizarse. No uses git.
+
+Resultado: Junie añadió js/categorias.js, js/proveedores.js y el panel para asignar proveedores a un producto. Volvió a
+avisar de que no pudo comprobar el JavaScript.
+
+Comprobación en el navegador: creé y borré una categoría; al intentar borrar "Informática" apareció el error de que
+tiene productos; creé y edité un proveedor; y cambié los proveedores de un producto.

@@ -249,6 +249,38 @@ td {
     gap: .4rem;
 }
 
+.selector-proveedores {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem;
+    padding: .8rem;
+    border: 1px solid #d5e0e8;
+    border-radius: .5rem;
+    background: #f8fafc;
+}
+
+.selector-proveedores legend {
+    padding-inline: .35rem;
+    color: #344054;
+    font-weight: 650;
+}
+
+.selector-proveedores label {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    margin: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.selector-proveedores input[type="checkbox"] {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+}
+
 .boton-accion {
     min-height: 2rem;
     padding: .3rem .55rem;

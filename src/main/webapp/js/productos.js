@@ -1,9 +1,12 @@
 import {
     actualizarProducto,
+    asignarProveedores,
     borrarProducto,
     crearProducto,
     listarCategorias,
-    listarProductos
+    listarProductos,
+    listarProveedores,
+    listarProveedoresDeProducto
 } from "./api.js";
 
 const formulario = document.querySelector("#formulario-producto");
@@ -20,6 +23,7 @@ const secciones = {
 
 let productos = [];
 let productoEnEdicion = null;
+let productoProveedoresAbierto = null;
 
 function mostrarMensaje(texto = "", tipo = "") {
     mensajes.textContent = texto;
@@ -61,6 +65,7 @@ function crearCelda(texto) {
 
 function renderizarProductos() {
     filasProductos.replaceChildren();
+    productoProveedoresAbierto = null;
     if (productos.length === 0) {
         const fila = document.createElement("tr");
         const celda = crearCelda("No hay productos para mostrar.");
@@ -90,6 +95,7 @@ function renderizarProductos() {
         acciones.className = "acciones-tabla";
         acciones.append(
             crearBotonAccion("Editar", "editar", producto.id),
+            crearBotonAccion("Proveedores", "proveedores", producto.id),
             crearBotonAccion("Borrar", "borrar", producto.id, "boton-borrar")
         );
         celdaAcciones.append(acciones);
@@ -106,6 +112,80 @@ function crearBotonAccion(texto, accion, id, claseExtra = "") {
     boton.dataset.productId = String(id);
     boton.textContent = texto;
     return boton;
+}
+
+function crearFilaSeleccionProveedores(productoId, proveedores, proveedoresAsignados) {
+    const fila = document.createElement("tr");
+    fila.dataset.providerProductId = String(productoId);
+    const celda = document.createElement("td");
+    celda.colSpan = 6;
+    const grupo = document.createElement("fieldset");
+    grupo.className = "selector-proveedores";
+    const leyenda = document.createElement("legend");
+    leyenda.textContent = "Proveedores del producto";
+    grupo.append(leyenda);
+
+    const idsAsignados = new Set(proveedoresAsignados.map(proveedor => String(proveedor.id)));
+    for (const proveedor of proveedores) {
+        const etiqueta = document.createElement("label");
+        const casilla = document.createElement("input");
+        casilla.type = "checkbox";
+        casilla.value = String(proveedor.id);
+        casilla.checked = idsAsignados.has(String(proveedor.id));
+        etiqueta.append(casilla, document.createTextNode(` ${proveedor.nombre}`));
+        grupo.append(etiqueta);
+    }
+
+    const botonGuardarProveedores = document.createElement("button");
+    botonGuardarProveedores.type = "button";
+    botonGuardarProveedores.className = "boton boton-principal";
+    botonGuardarProveedores.dataset.action = "guardar-proveedores";
+    botonGuardarProveedores.dataset.productId = String(productoId);
+    botonGuardarProveedores.textContent = "Guardar selección";
+    grupo.append(botonGuardarProveedores);
+    celda.append(grupo);
+    fila.append(celda);
+    return fila;
+}
+
+async function alternarProveedores(productoId, boton) {
+    const filaActual = filasProductos.querySelector("tr[data-provider-product-id]");
+    if (Number(productoProveedoresAbierto) === Number(productoId)) {
+        filaActual?.remove();
+        productoProveedoresAbierto = null;
+        boton.textContent = "Proveedores";
+        return;
+    }
+
+    filaActual?.remove();
+    productoProveedoresAbierto = productoId;
+    boton.textContent = "Cerrar proveedores";
+    const filaProducto = boton.closest("tr");
+    const filaCarga = document.createElement("tr");
+    filaCarga.dataset.providerProductId = String(productoId);
+    const celdaCarga = crearCelda("Cargando proveedores...");
+    celdaCarga.colSpan = 6;
+    filaCarga.append(celdaCarga);
+    filaProducto.after(filaCarga);
+    mostrarMensaje("Cargando proveedores...");
+
+    try {
+        const [proveedores, asignados] = await Promise.all([
+            listarProveedores(),
+            listarProveedoresDeProducto(productoId)
+        ]);
+        if (Number(productoProveedoresAbierto) === Number(productoId) && filaCarga.isConnected) {
+            filaCarga.replaceWith(crearFilaSeleccionProveedores(productoId, proveedores, asignados));
+            mostrarMensaje();
+        }
+    } catch (error) {
+        filaCarga.remove();
+        if (Number(productoProveedoresAbierto) === Number(productoId)) {
+            productoProveedoresAbierto = null;
+            boton.textContent = "Proveedores";
+            mostrarError(error);
+        }
+    }
 }
 
 async function cargarDatos() {
@@ -136,6 +216,19 @@ async function cargarDatos() {
     }
 }
 
+async function refrescarCategorias() {
+    try {
+        const categoriaSeleccionada = selectorCategoria.value;
+        const categorias = await listarCategorias();
+        cargarCategorias(categorias);
+        if (categorias.some(categoria => String(categoria.id) === categoriaSeleccionada)) {
+            selectorCategoria.value = categoriaSeleccionada;
+        }
+    } catch (error) {
+        mostrarError(error);
+    }
+}
+
 function iniciarEdicion(producto) {
     productoEnEdicion = producto.id;
     formulario.elements.codigo.value = producto.codigo;
@@ -158,6 +251,8 @@ function limpiarFormulario() {
 botonesNavegacion.forEach(boton => {
     boton.addEventListener("click", () => cambiarSeccion(boton.dataset.sectionTarget));
 });
+
+document.addEventListener("categorias-actualizadas", refrescarCategorias);
 
 formulario.addEventListener("reset", () => {
     limpiarFormulario();
@@ -209,6 +304,31 @@ filasProductos.addEventListener("click", async evento => {
 
     const producto = productos.find(item => String(item.id) === boton.dataset.productId);
     if (!producto) {
+        return;
+    }
+
+    if (boton.dataset.action === "proveedores") {
+        for (const botonProveedores of filasProductos.querySelectorAll('button[data-action="proveedores"]')) {
+            botonProveedores.textContent = "Proveedores";
+        }
+        await alternarProveedores(producto.id, boton);
+        return;
+    }
+
+    if (boton.dataset.action === "guardar-proveedores") {
+        const filaProveedores = boton.closest("tr[data-provider-product-id]");
+        const proveedorIds = Array.from(filaProveedores.querySelectorAll('input[type="checkbox"]:checked'))
+            .map(casilla => Number(casilla.value));
+        boton.disabled = true;
+        mostrarMensaje("Guardando proveedores...");
+        try {
+            await asignarProveedores(producto.id, proveedorIds);
+            mostrarMensaje("Proveedores asignados correctamente.", "exito");
+        } catch (error) {
+            mostrarError(error);
+        } finally {
+            boton.disabled = false;
+        }
         return;
     }
 
