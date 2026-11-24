@@ -368,4 +368,23 @@ en estar disponible y una sección final que enlaza con este archivo.
 ### 15. Prueba de persistencia
 
 Creé la categoría "Prueba persistencia", ejecuté docker compose down y después docker compose up -d. Al listar las
-categorías seguía apareciendo, así que los datos se conservan en el volumen db_data aunque se borren los contenedores.
+categorías seguía apareciendo, así que los datos se conservan en el volumen db_data aunque se borren los
+contenedores.
+
+### 16. Publicación y prueba final desde cero
+
+Subí el proyecto a GitHub y sustituí en el README el marcador de la URL por la dirección real del repositorio.
+
+Prueba final: cloné el repositorio en una carpeta temporal, copié .env.example a .env y ejecuté docker compose up
+--build -d, siguiendo los pasos del README. Arrancaron los tres contenedores, la API devolvió las tres categorías
+iniciales y la página respondió con el código 200.
+
+## Resumen de correcciones
+
+- Corrección manual en docker-compose.yml: quité los nombres fijos del volumen y de la red.
+- Corrección pedida a Junie: añadir la codificación UTF-8 al pom.xml.
+- Error corregido tras leer el registro de Payara: la url del data-source tenía que empezar por jdbc:.
+- Error corregido tras leer el registro de Payara: fallo de SSL en la conexión con MySQL.
+- Mejora de los tests: los que Junie añadió por su cuenta no probaban el DAO ni los casos correctos, y pedí completarlos
+  con Mockito y H2.
+- Correcciones manuales en el README: nombre, aviso de arranque, sección de uso de IA y URL del repositorio.
