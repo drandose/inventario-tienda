@@ -104,4 +104,23 @@ Prompt:
 > Después ejecuta mvn package y dime si termina bien. No uses git.
 
 Resultado: Junie creó las dos clases y la página. El comando mvn package terminó con BUILD SUCCESS. No hizo falta
-corregir nada.
+corregir nada.### 6. Dockerfile y servicio de la aplicación
+
+Prompt:
+
+> Crea un Dockerfile multi-stage:
+> - Primera etapa con la imagen maven:3.9-eclipse-temurin-21 que copie pom.xml y src y ejecute mvn package -DskipTests.
+> - Segunda etapa con la imagen payara/micro:7.2026.11 que copie el .war generado a
+>   /opt/payara/deployments/inventario-tienda.war y arranque con
+>   CMD ["--deploy", "/opt/payara/deployments/inventario-tienda.war", "--contextroot", "ROOT", "--noCluster"].
+>
+> Añade al docker-compose.yml el servicio app: se construye con ese Dockerfile, publica el puerto 8080, está en
+> red_interna, espera a que db esté healthy y recibe las variables de entorno DB_URL (jdbc:mysql://db:3306/ seguido del
+> nombre de la base de datos), DB_USER y DB_PASSWORD tomadas del .env.
+> Crea también un .dockerignore con target, .git, .idea y .env. No cambies nada más ni uses git.
+
+Resultado: Junie creó el Dockerfile con dos etapas, añadió el servicio app al docker-compose.yml y creó el
+.dockerignore. No hizo falta corregir nada.
+
+Comprobación: ejecuté docker compose up --build -d y arrancaron los tres contenedores. La
+dirección http://localhost:8080/api/estado respondió {"estado":"ok"}.
