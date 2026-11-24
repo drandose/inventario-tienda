@@ -21,6 +21,13 @@ public class CategoriaDao {
     @Resource(lookup = "java:app/jdbc/inventario")
     private DataSource dataSource;
 
+    public CategoriaDao() {
+    }
+
+    public CategoriaDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public List<Categoria> listar() {
         String sql = "SELECT id, nombre FROM categoria ORDER BY id";
         List<Categoria> categorias = new ArrayList<>();

@@ -25,6 +25,13 @@ public class ProductoDao {
     @Resource(lookup = "java:app/jdbc/inventario")
     private DataSource dataSource;
 
+    public ProductoDao() {
+    }
+
+    public ProductoDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public List<Producto> listar() {
         String sql = SELECT_CON_CATEGORIA + "ORDER BY p.id";
         List<Producto> productos = new ArrayList<>();
@@ -129,7 +136,7 @@ public class ProductoDao {
     }
 
     private RuntimeException traducirIntegridad(SQLIntegrityConstraintViolationException exception, String mensaje) {
-        if (exception.getErrorCode() == 1062) {
+        if (exception.getErrorCode() == 1062 || "23505".equals(exception.getSQLState())) {
             return new ConflictoException("Ya existe un producto con ese código.");
         }
         return new AccesoDatosException(mensaje, exception);

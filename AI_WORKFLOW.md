@@ -283,4 +283,33 @@ Resultado: Junie añadió js/categorias.js, js/proveedores.js y el panel para as
 avisar de que no pudo comprobar el JavaScript.
 
 Comprobación en el navegador: creé y borré una categoría; al intentar borrar "Informática" apareció el error de que
-tiene productos; creé y edité un proveedor; y cambié los proveedores de un producto.
+tiene productos; creé y edité un proveedor; y cambié los proveedores de un producto.### 13. Tests del servicio y del DAO
+
+Revisión previa: los tests que Junie había ido añadiendo solo comprobaban validaciones y creaban el servicio sin DAO,
+así que no probaban ni el caso correcto ni el acceso a datos.
+
+Decisión: probar los servicios con Mockito, usando un DAO simulado, y los DAO con una base de datos H2 en memoria en
+modo MySQL. H2 permite ejecutar los tests sin tener Docker arrancado. No es idéntica a MySQL, por lo que el
+comportamiento real se comprueba además con la aplicación en Docker.
+
+Prompt:
+
+> Mejora los tests con JUnit 5:
+> - Añade al pom.xml, con scope test, org.mockito:mockito-junit-jupiter:5.23.0 y com.h2database:h2:2.4.240.
+> - Tests de servicio con Mockito (@ExtendWith(MockitoExtension.class), @Mock del DAO y @InjectMocks del servicio) para
+>   CategoriaServicio, ProductoServicio y ProveedorServicio: caso correcto de crear y de obtener, NoEncontradoException
+>   cuando el id no existe y las validaciones que ya había.
+> - Tests de integración de los DAO con H2 en memoria en modo MySQL (jdbc:h2:mem:...;MODE=MySQL): crea
+>   src/test/resources/esquema-test.sql con las mismas cuatro tablas y restricciones que db/init.sql adaptadas a H2 y
+>   cárgalo antes de cada test. Para pasar el DataSource en los tests añade a cada DAO un constructor que lo reciba,
+>   manteniendo el constructor vacío.
+> - Los tests de DAO deben cubrir insertar, buscar, listar, actualizar y borrar, y estos errores: nombre de categoría
+>   repetido, código de producto repetido, borrar una categoría con productos y buscar un id que no existe.
+>
+> Ejecuta mvn test y corrige lo que falle. No cambies el comportamiento de la aplicación ni uses git.
+
+Resultado: Junie añadió las dos dependencias de test, un constructor con DataSource en cada DAO, el esquema para H2 y
+los tests nuevos.
+
+Comprobación: ejecuté mvn test y pasaron los 32 tests, sin fallos ni errores. Después reconstruí los contenedores y la
+aplicación siguió funcionando.

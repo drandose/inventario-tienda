@@ -18,6 +18,13 @@ public class ProductoProveedorDao {
     @Resource(lookup = "java:app/jdbc/inventario")
     private DataSource dataSource;
 
+    public ProductoProveedorDao() {
+    }
+
+    public ProductoProveedorDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public List<Proveedor> listarProveedoresDeProducto(int productoId) {
         String sql = "SELECT p.id, p.nombre, p.telefono, p.email FROM proveedor p "
                 + "JOIN producto_proveedor pp ON pp.proveedor_id = p.id "

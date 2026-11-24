@@ -19,6 +19,13 @@ public class ProveedorDao {
     @Resource(lookup = "java:app/jdbc/inventario")
     private DataSource dataSource;
 
+    public ProveedorDao() {
+    }
+
+    public ProveedorDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public List<Proveedor> listar() {
         String sql = "SELECT id, nombre, telefono, email FROM proveedor ORDER BY id";
         List<Proveedor> proveedores = new ArrayList<>();
