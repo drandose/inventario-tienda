@@ -43,4 +43,29 @@ Prompt:
 > Crea un archivo .gitignore en la raíz del proyecto que ignore target/, .idea/, los archivos *.iml, el archivo .env y
 > .DS_Store. No uses git.
 
-Resultado: Junie creó el .gitignore con las cinco reglas pedidas. No hizo falta corregir nada.
+Resultado: Junie creó el .gitignore con las cinco reglas pedidas. No hizo falta corregir nada.### 3. Crear el script de
+la base de datos
+
+Decisión: una categoría tiene muchos productos (relación 1:N) y un producto puede tener varios proveedores (relación N:
+M) mediante la tabla intermedia producto_proveedor. No se puede borrar una categoría que tenga productos (ON DELETE
+RESTRICT). Al borrar un producto o un proveedor se borran sus relaciones (ON DELETE CASCADE).
+
+Prompt:
+
+> Crea el archivo db/init.sql para MySQL. Empieza con SET NAMES utf8mb4. No pongas CREATE DATABASE ni USE, porque la
+> base de datos la crea Docker.
+> Tablas:
+> - categoria: id (clave primaria autoincremental), nombre (obligatorio y único).
+> - proveedor: id (clave primaria autoincremental), nombre (obligatorio), telefono, email.
+> - producto: id (clave primaria autoincremental), codigo (obligatorio y único), nombre (obligatorio), precio (decimal,
+>   mayor que 0), stock (entero, no negativo), categoria_id (clave foránea a categoria con ON DELETE RESTRICT y ON
+>   UPDATE CASCADE).
+> - producto_proveedor: producto_id y proveedor_id como clave primaria compuesta, las dos claves foráneas con ON DELETE
+>   CASCADE.
+>
+> Después añade datos de prueba: 3 categorías, 3 proveedores, 6 productos y varias relaciones entre productos y
+> proveedores.
+> No crees ningún otro archivo ni uses git.
+
+Resultado: Junie creó db/init.sql con las cuatro tablas, las restricciones y los datos de prueba. Tras revisarlo no hizo
+falta corregir nada.
