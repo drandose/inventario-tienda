@@ -36,15 +36,18 @@ Revisión: faltaba la codificación del proyecto. Prompt de corrección:
 > valor UTF-8 y no cambies nada más. Después ejecuta mvn package y dime si termina bien.
 
 Resultado: Junie añadió solo esa propiedad. El comando mvn package terminó bien y generó el archivo
-inventario-tienda-1.0-SNAPSHOT.war en la carpeta target.### 2. Crear el .gitignore
+inventario-tienda-1.0-SNAPSHOT.war en la carpeta target.
+
+### 2. Crear el .gitignore
 
 Prompt:
 
 > Crea un archivo .gitignore en la raíz del proyecto que ignore target/, .idea/, los archivos *.iml, el archivo .env y
 > .DS_Store. No uses git.
 
-Resultado: Junie creó el .gitignore con las cinco reglas pedidas. No hizo falta corregir nada.### 3. Crear el script de
-la base de datos
+Resultado: Junie creó el .gitignore con las cinco reglas pedidas. No hizo falta corregir nada.
+
+### 3. Crear el script de la base de datos
 
 Decisión: una categoría tiene muchos productos (relación 1:N) y un producto puede tener varios proveedores (relación N:
 M) mediante la tabla intermedia producto_proveedor. No se puede borrar una categoría que tenga productos (ON DELETE
@@ -68,7 +71,9 @@ Prompt:
 > No crees ningún otro archivo ni uses git.
 
 Resultado: Junie creó db/init.sql con las cuatro tablas, las restricciones y los datos de prueba. Tras revisarlo no hizo
-falta corregir nada.### 4. Docker Compose con la base de datos
+falta corregir nada.
+
+### 4. Docker Compose con la base de datos
 
 Prompt:
 
@@ -90,8 +95,9 @@ Corrección manual: Junie había puesto nombres fijos al volumen y a la red (nam
 esas dos líneas para que Docker ponga delante el nombre del proyecto y no choquen con otros proyectos del mismo equipo.
 
 Comprobación: copié .env.example a .env y ejecuté docker compose up -d. El contenedor de MySQL quedó en estado healthy.
-Entré en Adminer (http://localhost:8081) y estaban las cuatro tablas con los datos de prueba.### 5. Primera parte de la
-aplicación
+Entré en Adminer (http://localhost:8081) y estaban las cuatro tablas con los datos de prueba.
+
+### 5. Primera parte de la aplicación
 
 Prompt:
 
@@ -104,7 +110,9 @@ Prompt:
 > Después ejecuta mvn package y dime si termina bien. No uses git.
 
 Resultado: Junie creó las dos clases y la página. El comando mvn package terminó con BUILD SUCCESS. No hizo falta
-corregir nada.### 6. Dockerfile y servicio de la aplicación
+corregir nada.
+
+### 6. Dockerfile y servicio de la aplicación
 
 Prompt:
 
@@ -123,8 +131,9 @@ Resultado: Junie creó el Dockerfile con dos etapas, añadió el servicio app al
 .dockerignore. No hizo falta corregir nada.
 
 Comprobación: ejecuté docker compose up --build -d y arrancaron los tres contenedores. La
-dirección http://localhost:8080/api/estado respondió {"estado":"ok"}.### 7. Conexión con la base de datos y lectura de
-categorías
+dirección http://localhost:8080/api/estado respondió {"estado":"ok"}.
+
+### 7. Conexión con la base de datos y lectura de categorías
 
 Prompt:
 
@@ -168,7 +177,9 @@ Decisión: desactivar el cifrado entre la aplicación y MySQL porque los dos con
 Docker y MySQL no publica ningún puerto. En un entorno real se mantendría el cifrado.
 
 Comprobación: tras reconstruir con docker compose up --build -d, la dirección http://localhost:8080/api/categorias
-devolvió las tres categorías en JSON.### 8. CRUD completo de categorías
+devolvió las tres categorías en JSON.
+
+### 8. CRUD completo de categorías
 
 Prompt:
 
@@ -197,7 +208,9 @@ Comprobación con curl tras reconstruir los contenedores:
 - Crear la categoría "Redes" devolvió 201.
 - Crear una categoría con el nombre vacío devolvió 400.
 - Pedir la categoría 999 devolvió 404.
-- Borrar la categoría 1, que tiene productos, devolvió 409.### 9. CRUD de productos
+- Borrar la categoría 1, que tiene productos, devolvió 409.
+
+### 9. CRUD de productos
 
 Prompt:
 
@@ -220,7 +233,9 @@ Comprobación con curl:
 - Pedir el producto 1 devolvió 200, con el nombre de su categoría.
 - Crear el producto RED-001 devolvió 201.
 - Crear un producto con precio negativo devolvió 400.
-- Crear un producto con un código repetido devolvió 409.### 10. CRUD de proveedores y relación con productos
+- Crear un producto con un código repetido devolvió 409.
+
+### 10. CRUD de proveedores y relación con productos
 
 Prompt:
 
@@ -245,7 +260,9 @@ Comprobación con curl:
 - Pedir los proveedores del producto 1 devolvió 200 con los proveedores 1 y 2.
 - Cambiarlos por los proveedores 2 y 3 devolvió 204.
 - Volver a pedirlos devolvió los proveedores 2 y 3.
-- Intentar asignar el proveedor 999, que no existe, devolvió 404.### 11. Interfaz web: base y productos
+- Intentar asignar el proveedor 999, que no existe, devolvió 404.
+
+### 11. Interfaz web: base y productos
 
 Prompt:
 
@@ -265,7 +282,9 @@ Resultado: Junie creó index.html, css/estilos.css, js/api.js y js/productos.js.
 JavaScript porque Node no está instalado en mi equipo.
 
 Comprobación: tras reconstruir abrí http://localhost:8080 y probé a crear, editar y borrar un producto. Al guardar uno
-con precio negativo apareció el mensaje de error.### 12. Interfaz web: categorías, proveedores y asignación
+con precio negativo apareció el mensaje de error.
+
+### 12. Interfaz web: categorías, proveedores y asignación
 
 Prompt:
 
@@ -283,7 +302,9 @@ Resultado: Junie añadió js/categorias.js, js/proveedores.js y el panel para as
 avisar de que no pudo comprobar el JavaScript.
 
 Comprobación en el navegador: creé y borré una categoría; al intentar borrar "Informática" apareció el error de que
-tiene productos; creé y edité un proveedor; y cambié los proveedores de un producto.### 13. Tests del servicio y del DAO
+tiene productos; creé y edité un proveedor; y cambié los proveedores de un producto.
+
+### 13. Tests del servicio y del DAO
 
 Revisión previa: los tests que Junie había ido añadiendo solo comprobaban validaciones y creaban el servicio sin DAO,
 así que no probaban ni el caso correcto ni el acceso a datos.
@@ -297,7 +318,8 @@ Prompt:
 > Mejora los tests con JUnit 5:
 > - Añade al pom.xml, con scope test, org.mockito:mockito-junit-jupiter:5.23.0 y com.h2database:h2:2.4.240.
 > - Tests de servicio con Mockito (@ExtendWith(MockitoExtension.class), @Mock del DAO y @InjectMocks del servicio) para
->   CategoriaServicio, ProductoServicio y ProveedorServicio: caso correcto de crear y de obtener, NoEncontradoException
+>   CategoriaServicio, ProductoServicio y ProveedorServicio: caso correcto de crear y de obtener,
+>   NoEncontradoException
 >   cuando el id no existe y las validaciones que ya había.
 > - Tests de integración de los DAO con H2 en memoria en modo MySQL (jdbc:h2:mem:...;MODE=MySQL): crea
 >   src/test/resources/esquema-test.sql con las mismas cuatro tablas y restricciones que db/init.sql adaptadas a H2 y
@@ -313,3 +335,37 @@ los tests nuevos.
 
 Comprobación: ejecuté mvn test y pasaron los 32 tests, sin fallos ni errores. Después reconstruí los contenedores y la
 aplicación siguió funcionando.
+
+### 14. README
+
+Prompt:
+
+> Crea el README.md del proyecto en español, con redacción sencilla y sin adornos. Debe incluir:
+> 1. Descripción breve de la aplicación y tecnologías usadas.
+> 2. Diagrama entidad-relación en Mermaid (erDiagram) con las cuatro tablas y sus relaciones.
+> 3. Esquema de la arquitectura de contenedores en Mermaid (flowchart): navegador, app (Payara Micro, puerto 8080), db
+>    (MySQL, sin puerto publicado), adminer (puerto 8081), la red interna y el volumen db_data.
+> 4. Arquitectura por capas con los paquetes del proyecto.
+> 5. Puesta en marcha paso a paso: clonar, copiar .env.example a .env, explicar las cuatro variables y ejecutar docker
+>    compose up --build -d.
+> 6. Puertos y credenciales de prueba (las de .env.example) y cómo entrar en Adminer.
+> 7. Manual breve de uso de la interfaz.
+> 8. Endpoints de la API con sus códigos de respuesta.
+> 9. Cómo ejecutar los tests (mvn test) y qué cubren.
+> 10. Persistencia: los datos se guardan en el volumen db_data; docker compose down los conserva y docker compose down
+>     -v los borra.
+> 11. Decisiones técnicas: el cifrado entre la aplicación y MySQL está desactivado porque van por la red interna de
+>     Docker, y los tests de DAO usan H2 en memoria.
+>
+> No inventes nada que no esté en el proyecto. No uses git.
+
+Resultado: Junie creó el README.md con los diagramas, la puesta en marcha, los puertos, las credenciales de prueba, el
+manual de uso, los endpoints, los tests y la persistencia.
+
+Corrección manual: añadí mi nombre y el módulo debajo del título, un aviso de que la aplicación tarda unos 30 segundos
+en estar disponible y una sección final que enlaza con este archivo.
+
+### 15. Prueba de persistencia
+
+Creé la categoría "Prueba persistencia", ejecuté docker compose down y después docker compose up -d. Al listar las
+categorías seguía apareciendo, así que los datos se conservan en el volumen db_data aunque se borren los contenedores.
