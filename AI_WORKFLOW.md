@@ -68,4 +68,25 @@ Prompt:
 > No crees ningún otro archivo ni uses git.
 
 Resultado: Junie creó db/init.sql con las cuatro tablas, las restricciones y los datos de prueba. Tras revisarlo no hizo
-falta corregir nada.
+falta corregir nada.### 4. Docker Compose con la base de datos
+
+Prompt:
+
+> Crea un docker-compose.yml con dos servicios. El servicio de la aplicación todavía no.
+> - db: imagen mysql:8.4. Las variables MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER y MYSQL_PASSWORD se leen del
+>   archivo .env con los nombres DB_ROOT_PASSWORD, DB_NAME, DB_USER y DB_PASSWORD. Usa un volumen con nombre db_data en
+>   /var/lib/mysql. Monta db/init.sql en /docker-entrypoint-initdb.d/ en solo lectura. Añade un healthcheck con
+>   mysqladmin ping. No publiques ningún puerto de db.
+> - adminer: imagen adminer:5, con el puerto 8081 del equipo hacia el 8080 del contenedor, y que espere a que db esté
+>   healthy.
+>
+> Los dos servicios van en una red llamada red_interna.
+> Crea también .env.example con esas cuatro variables y valores de ejemplo. No crees el archivo .env ni uses git.
+
+Resultado: Junie creó el docker-compose.yml con MySQL y Adminer y el archivo .env.example.
+
+Corrección manual: Junie había puesto nombres fijos al volumen y a la red (name: db_data y name: red_interna). Borré
+esas dos líneas para que Docker ponga delante el nombre del proyecto y no choquen con otros proyectos del mismo equipo.
+
+Comprobación: copié .env.example a .env y ejecuté docker compose up -d. El contenedor de MySQL quedó en estado healthy.
+Entré en Adminer (http://localhost:8081) y estaban las cuatro tablas con los datos de prueba.
